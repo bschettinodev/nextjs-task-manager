@@ -1,4 +1,5 @@
 import { createCaller } from "@/server/api/router";
+import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -8,9 +9,10 @@ export default async function HomePage() {
 
   return (
     <main>
-      <h1>Gerenciador de tarefas</h1>
-      <p>Configuração inicial do desafio técnico da Artefact.</p>
-      <p>Conexão com o backend: <strong>{health.status}</strong></p>
+      <h1>Task Manager</h1>
+      <p>A simple place to keep track of your tasks.</p>
+      <p>Backend connection: <strong>{health.status}</strong></p>
+      <Link href="/tarefas">View tasks</Link>
     </main>
   );
 }

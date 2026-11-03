@@ -1,0 +1,109 @@
+.page {
+  max-width: 56rem;
+  margin: 3rem auto;
+}
+
+.page a {
+  color: #1747a6;
+  text-underline-offset: 0.2em;
+}
+
+.page a:focus-visible {
+  outline: 3px solid #1747a6;
+  outline-offset: 4px;
+  border-radius: 2px;
+}
+
+.header,
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.header {
+  margin-top: 1.5rem;
+}
+
+.header h1 {
+  margin: 0;
+}
+
+.header p {
+  margin-bottom: 0;
+}
+
+.page button {
+  min-height: 2.75rem;
+  padding: 0.65rem 1rem;
+  border: 1px solid #c4cad4;
+  border-radius: 0.5rem;
+  font: inherit;
+}
+
+.page button:disabled {
+  color: #596273;
+  background: #edf0f4;
+  cursor: not-allowed;
+}
+
+.hint {
+  color: #596273;
+  font-size: 0.9rem;
+}
+
+.notice,
+.card {
+  padding: 1.5rem;
+  border: 1px solid #dce1e8;
+  border-radius: 0.75rem;
+  background: #fff;
+  overflow-wrap: anywhere;
+}
+
+.notice {
+  margin-top: 2rem;
+}
+
+.notice h2,
+.card h2 {
+  margin-top: 0;
+  font-size: 1.25rem;
+}
+
+.list {
+  display: grid;
+  gap: 1rem;
+  padding: 0;
+  list-style: none;
+}
+
+.description {
+  white-space: pre-wrap;
+}
+
+.footer {
+  margin-top: 1.5rem;
+}
+
+.footer p {
+  margin: 0;
+}
+
+@media (max-width: 36rem) {
+  .page {
+    margin: 1.5rem auto;
+  }
+
+  .header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .notice,
+  .card {
+    padding: 1rem;
+  }
+}

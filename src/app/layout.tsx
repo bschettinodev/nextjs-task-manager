@@ -3,13 +3,13 @@ import type { ReactNode } from "react";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Gerenciador de tarefas | Artefact",
-  description: "Desafio técnico de Software Engineer: gerenciamento de tarefas.",
+  title: "Task Manager | Artefact",
+  description: "A simple task manager for the Artefact Software Engineer challenge.",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="pt-BR">
+    <html lang="en">
       <body>{children}</body>
     </html>
   );
