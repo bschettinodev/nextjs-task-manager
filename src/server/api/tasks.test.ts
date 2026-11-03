@@ -136,6 +136,20 @@ test("HTTP errors report BAD_REQUEST and NOT_FOUND", async () => {
   assert.equal(body.error.message, "Task not found.");
 });
 
+test("HTTP internal errors do not expose exception details or stacks", async (context) => {
+  context.mock.method(tasks, "set", () => {
+    throw new Error("INTERNAL_STORAGE_DETAIL");
+  });
+  const response = await request("task.create", { title: "Valid title" });
+  assert.equal(response.status, 500);
+  const text = await response.text();
+  const body = JSON.parse(text);
+  assert.equal(body.error.data.code, "INTERNAL_SERVER_ERROR");
+  assert.equal(body.error.message, "An unexpected error occurred. Please try again.");
+  assert.equal(body.error.data.stack, undefined);
+  assert.ok(!text.includes("INTERNAL_STORAGE_DETAIL"));
+});
+
 test("rejects missing or invalid field types and attempts to set immutable fields", async () => {
   for (const input of [
     {},

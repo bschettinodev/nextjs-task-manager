@@ -172,3 +172,50 @@ test("fits mobile screens and keeps keyboard focus visible", async ({ page }) =>
   expect(await page.locator("#title").evaluate(element => getComputedStyle(element).outlineStyle)).not.toBe("none");
   expect(await page.locator("html").evaluate(element => element.scrollWidth)).toBeLessThanOrEqual(375);
 });
+
+test("without JavaScript, native submission does not put task fields in the URL", async ({ browser }) => {
+  const context = await browser.newContext({ javaScriptEnabled: false });
+  try {
+    const page = await context.newPage();
+    const response = await page.goto("http://127.0.0.1:3101/tasks/new");
+    expect(await response?.text()).toContain("<noscript>JavaScript is required to save tasks.</noscript>");
+    await page.getByLabel("Title (required)", { exact: true }).fill("Private draft title");
+    await page.getByLabel("Description (optional)", { exact: true }).fill("Private draft description");
+    const submission = page.waitForRequest(request => request.isNavigationRequest() && request.method() === "POST");
+    await page.getByRole("button", { name: "Save task", exact: true }).click();
+    const request = await submission;
+    expect(new URL(request.url()).search).toBe("");
+    expect(page.url()).not.toContain("Private");
+    expect(await client.task.list.query()).toEqual([]);
+  } finally {
+    await context.close();
+  }
+});
+
+test("a completed mutation does not redirect after leaving the form", async ({ page }) => {
+  const gate = Promise.withResolvers<void>();
+  await page.route("**/api/trpc/task.create*", async route => {
+    await gate.promise;
+    await route.continue();
+  });
+  try {
+    await page.goto("/");
+    await page.getByRole("link", { name: "View tasks", exact: true }).click();
+    await page.getByRole("link", { name: "New task", exact: true }).click();
+    await page.getByLabel("Title (required)", { exact: true }).fill("Save while leaving");
+    await page.getByRole("button", { name: "Save task", exact: true }).click();
+    await expect(page.getByRole("button", { name: "Saving…", exact: true })).toBeDisabled();
+    await page.goBack();
+    await expect(page).toHaveURL(/\/tasks$/);
+    await page.getByRole("link", { name: "Home", exact: true }).click();
+    const response = page.waitForResponse(result => result.url().includes("task.create"));
+    gate.resolve();
+    await (await response).finished();
+    const redirected = await page.waitForURL(/saved=created/, { timeout: 1500 }).then(() => true, () => false);
+    expect(redirected).toBe(false);
+    await expect(page).toHaveURL("http://127.0.0.1:3101/");
+    await expect.poll(async () => (await client.task.list.query()).map(task => task.title)).toContain("Save while leaving");
+  } finally {
+    gate.resolve();
+  }
+});

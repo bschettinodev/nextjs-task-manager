@@ -26,8 +26,8 @@ export default async function TasksPage({ searchParams }: {
 
   try {
     tasks = await createCaller({}).task.list();
-  } catch (error) {
-    console.error("Failed to load tasks.", error);
+  } catch {
+    console.error("Failed to load tasks.");
     return (
       <main className={styles.page}>
         <Link href="/">Home</Link>

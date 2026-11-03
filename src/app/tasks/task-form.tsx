@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { isTRPCClientError } from "@trpc/client";
@@ -21,10 +21,16 @@ export default function TaskForm({ task }: { task?: Task }) {
   const [error, setError] = useState("");
   const [status, setStatus] = useState<"idle" | "saving" | "saved">("idle");
   const submissionLocked = useRef(false);
+  const active = useRef(true);
   const titleInput = useRef<HTMLInputElement>(null);
   const descriptionInput = useRef<HTMLTextAreaElement>(null);
   const errorMessage = useRef<HTMLParagraphElement>(null);
   const busy = status !== "idle";
+
+  useEffect(() => {
+    active.current = true;
+    return () => { active.current = false; };
+  }, []);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -55,6 +61,7 @@ export default function TaskForm({ task }: { task?: Task }) {
         await trpc.task.create.mutate(result.data);
       }
     } catch (cause) {
+      if (!active.current) return;
       const code = isTRPCClientError<AppRouter>(cause) ? cause.data?.code : undefined;
       setError(code === "NOT_FOUND"
         ? "This task no longer exists. Your changes have not been saved."
@@ -66,13 +73,14 @@ export default function TaskForm({ task }: { task?: Task }) {
       return;
     }
 
+    if (!active.current) return;
     setStatus("saved");
     // A document navigation guarantees a fresh SSR read after the mutation completes.
     window.location.replace(`/tasks?saved=${task ? "updated" : "created"}`);
   }
 
   return (
-    <form className={styles.form} onSubmit={handleSubmit} noValidate aria-busy={busy}>
+    <form className={styles.form} method="post" onSubmit={handleSubmit} noValidate aria-busy={busy}>
       <noscript>JavaScript is required to save tasks.</noscript>
       <p ref={errorMessage} role="alert" tabIndex={-1} className={styles.error}>
         {error}

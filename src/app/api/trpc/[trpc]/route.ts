@@ -9,6 +9,11 @@ function handler(request: Request) {
     req: request,
     router: appRouter,
     createContext: () => ({}),
+    onError({ error, path }) {
+      if (error.code === "INTERNAL_SERVER_ERROR") {
+        console.error("Unexpected tRPC error.", { path, code: error.code });
+      }
+    },
   });
 }
 
