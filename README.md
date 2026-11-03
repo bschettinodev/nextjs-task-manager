@@ -1,49 +1,60 @@
-# Gerenciador de tarefas — Artefact
+# Task Manager
 
-Desafio técnico em Next.js 15, React, TypeScript e tRPC.
+A web application for creating, viewing, editing and deleting tasks, with a server-rendered list and a responsive interface.
 
-## Executar
+## Features
 
-Use Node.js 24 LTS (indicado em `.nvmrc`) e npm. Nenhuma variável de ambiente é necessária nesta etapa.
+- Create and edit tasks with a required title and an optional description.
+- View tasks and their creation dates.
+- Delete tasks with confirmation.
+- Get validation, loading, success and error feedback.
+
+## Tech Stack
+
+Next.js 15, React, TypeScript, tRPC and Zod. Tests use the Node.js test runner and Playwright.
+
+## Getting Started
+
+Use Node.js 24 and npm. No database or environment file is required.
 
 ```sh
 npm ci
 npm run dev
 ```
 
-Acesse http://localhost:3000.
+Open [http://localhost:3000](http://localhost:3000) and select **View tasks**.
+
+For a production build:
 
 ```sh
-npm run lint
-npm run typecheck
 npm run build
 npm start
 ```
 
-## Etapa 1: configuração
+Stop the development server before building or running E2E tests, since they share the `.next` directory.
 
-- App Router e TypeScript em modo estrito.
-- tRPC exposto em `/api/trpc`, com uma procedure `health` cuja saída é validada por Zod.
-- Cliente tRPC tipado em `src/trpc/client.ts`, sem biblioteca adicional de cache.
-- A página inicial consulta a mesma procedure diretamente no servidor, por um caller. O resultado está no HTML inicial, com renderização dinâmica por requisição.
-- Os módulos do backend são protegidos por `server-only`. O cliente importa apenas o tipo do router.
-- TypeScript permanece na versão 5.9, compatível com o Next.js 15. ESLint 9 é usado por compatibilidade com a configuração oficial dessa versão do Next.js.
-- O override de PostCSS atualiza a dependência transitiva do Next.js para corrigir os alertas de segurança identificados pelo npm audit, mantendo a versão principal 8.
+## Testing
 
-## Verificações da configuração inicial
+Run lint, type checking and backend tests:
 
-Lint (sem warnings), tipagem e build de produção passaram com Node.js 24.
-Uma verificação HTTP em modo de produção confirmou o resultado da procedure no HTML inicial, `Cache-Control` com `no-store`, a consulta pelo cliente tRPC e o erro `NOT_FOUND` para uma procedure inexistente.
+```sh
+npm run lint
+npm run typecheck
+npm test
+```
 
-Na instalação inicial, `npm audit --omit=dev` não apontou vulnerabilidades. A auditoria completa ainda reportou 14 alertas moderados na cadeia de desenvolvimento do ESLint, relacionados ao minimatch. O npm também sinaliza que ESLint 9 está fora de suporte; ele foi mantido por compatibilidade com `eslint-config-next` 15. Não foi aplicado um override de versão principal ou `npm audit fix --force`, que poderia quebrar a compatibilidade. Esses pontos devem ser reavaliados quando houver atualizações compatíveis.
+Install Chromium once, then run the E2E tests:
 
-## Próximas etapas
+```sh
+npx playwright install chromium
+npm run test:e2e
+```
 
-Ainda não foram implementados o modelo de tarefa, armazenamento, CRUD ou formulários.
-O armazenamento será compartilhado entre o caller e as procedures HTTP dentro de uma única instância Node.js. Não haverá persistência entre reinicializações nem compartilhamento entre processos.
+On Linux, use `npx playwright install --with-deps chromium` if browser system dependencies are needed. E2E tests build the application and start their own production server on port 3101; keep that port available.
 
-Após as mutações, a estratégia prevista é `router.refresh()`. Sua atualização efetiva será verificada quando o CRUD existir.
+## Technical Notes
 
-Os testes de domínio cobrirão títulos vazios, IDs inexistentes e preservação da data de criação. Também será verificado que a listagem aparece no HTML inicial.
-
-As respostas teóricas serão preparadas em inglês em uma etapa posterior.
+- Next.js App Router renders the task list on the server, so tasks are included in the initial HTML.
+- tRPC provides typed communication between the frontend and backend. Zod validates input in the form and on the server.
+- Tasks are stored in memory and lost when the server restarts. Each server process has its own list. No authentication is implemented.
+- Reading the list works without browser JavaScript. Creating, editing and deleting tasks require JavaScript.
