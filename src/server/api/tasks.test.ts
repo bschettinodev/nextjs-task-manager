@@ -29,6 +29,20 @@ test("returns an empty list initially", async () => {
   assert.deepEqual(await caller.task.list(), []);
 });
 
+test("loads one task without exposing a mutable store reference", async () => {
+  const first = await caller.task.create({ title: "First", description: "Details" });
+  await caller.task.create({ title: "Second" });
+  const loaded = await caller.task.get({ id: first.id });
+  assert.deepEqual(loaded, first);
+  loaded.title = "Changed outside the store";
+  assert.deepEqual(await caller.task.get({ id: first.id }), first);
+});
+
+test("get rejects malformed IDs and reports missing tasks", async () => {
+  await assert.rejects(caller.task.get({ id: "invalid" }), hasCode("BAD_REQUEST"));
+  await assert.rejects(caller.task.get({ id: randomUUID() }), hasCode("NOT_FOUND"));
+});
+
 for (const title of ["", "   ", "\t\n"]) {
   test(`rejects blank titles on create and update: ${JSON.stringify(title)}`, async () => {
     await assert.rejects(caller.task.create({ title }), hasCode("BAD_REQUEST"));

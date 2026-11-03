@@ -35,18 +35,17 @@
   margin-bottom: 0;
 }
 
-.page button {
+.page .action {
+  display: inline-flex;
+  align-items: center;
+  box-sizing: border-box;
   min-height: 2.75rem;
   padding: 0.65rem 1rem;
   border: 1px solid #c4cad4;
   border-radius: 0.5rem;
   font: inherit;
-}
-
-.page button:disabled {
-  color: #596273;
-  background: #edf0f4;
-  cursor: not-allowed;
+  text-decoration: none;
+  background: #fff;
 }
 
 .hint {

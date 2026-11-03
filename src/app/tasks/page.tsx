@@ -14,7 +14,10 @@ const dateFormatter = new Intl.DateTimeFormat("en-US", {
   timeZone: "UTC",
 });
 
-export default async function TasksPage() {
+export default async function TasksPage({ searchParams }: {
+  searchParams: Promise<{ saved?: string | string[] }>;
+}) {
+  const { saved } = await searchParams;
   let tasks: Task[];
 
   try {
@@ -28,7 +31,7 @@ export default async function TasksPage() {
         <section className={styles.notice} aria-labelledby="error-title">
           <h2 id="error-title">Tasks could not be loaded</h2>
           <p>Please try again in a moment.</p>
-          <a href="/tarefas">Try again</a>
+          <a href="/tasks">Try again</a>
         </section>
       </main>
     );
@@ -42,13 +45,13 @@ export default async function TasksPage() {
           <h1>Tasks</h1>
           <p>Keep your work in view, one task at a time.</p>
         </div>
-        <button type="button" disabled aria-describedby="creation-note">
+        <Link href="/tasks/new" className={styles.action}>
           New task
-        </button>
+        </Link>
       </header>
-      <p id="creation-note" className={styles.hint}>
-        Task creation and editing will be available in the next step.
-      </p>
+      {(saved === "created" || saved === "updated") && (
+        <p role="status">{saved === "created" ? "Task created successfully." : "Task updated successfully."}</p>
+      )}
 
       {tasks.length === 0 ? (
         <section className={styles.notice} aria-labelledby="empty-title">
@@ -74,14 +77,13 @@ export default async function TasksPage() {
                         {dateFormatter.format(task.createdAt)} UTC
                       </time>
                     </p>
-                    <button
-                      type="button"
-                      disabled
+                    <Link
+                      href={`/tasks/${task.id}/edit`}
+                      className={styles.action}
                       aria-label={`Edit task: ${task.title}`}
-                      aria-describedby="creation-note"
                     >
                       Edit
-                    </button>
+                    </Link>
                   </footer>
                 </article>
               </li>

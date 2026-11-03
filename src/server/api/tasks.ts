@@ -21,6 +21,14 @@ export const taskRouter = createRouter({
     Array.from(tasks.values(), (task) => ({ ...task })),
   ),
 
+  get: publicProcedure.input(taskIdSchema).query(({ input }) => {
+    const task = tasks.get(input.id);
+    if (!task) {
+      throw new TRPCError({ code: "NOT_FOUND", message: "Task not found." });
+    }
+    return { ...task };
+  }),
+
   update: publicProcedure.input(updateTaskSchema).mutation(({ input }) => {
     const current = tasks.get(input.id);
     if (!current) {

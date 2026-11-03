@@ -1,0 +1,96 @@
+.form {
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  border: 1px solid #dce1e8;
+  border-radius: 0.75rem;
+  background: #fff;
+}
+
+.form fieldset {
+  min-width: 0;
+  padding: 0;
+  margin: 0;
+  border: 0;
+}
+
+.legend {
+  margin-bottom: 1.25rem;
+  font-weight: 600;
+}
+
+.form label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.form label span {
+  color: #596273;
+  font-weight: normal;
+}
+
+.form input,
+.form textarea {
+  box-sizing: border-box;
+  width: 100%;
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  border: 1px solid #8791a1;
+  border-radius: 0.5rem;
+  font: inherit;
+}
+
+.form textarea {
+  resize: vertical;
+}
+
+.form [aria-invalid="true"] {
+  border-color: #a21b23;
+}
+
+.form button {
+  min-height: 2.75rem;
+  padding: 0.65rem 1rem;
+  border: 1px solid #1747a6;
+  border-radius: 0.5rem;
+  font: inherit;
+  cursor: pointer;
+  color: #1747a6;
+  background: #fff;
+}
+
+.form button[type="submit"] {
+  color: #fff;
+  background: #1747a6;
+}
+
+.form button:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+
+.form :focus-visible {
+  outline: 3px solid #1747a6;
+  outline-offset: 3px;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.error {
+  color: #a21b23;
+  overflow-wrap: anywhere;
+}
+
+.error:empty {
+  margin: 0;
+}
+
+@media (max-width: 36rem) {
+  .form {
+    padding: 1rem;
+  }
+}

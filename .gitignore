@@ -12,7 +12,7 @@ npm-debug.log*
 .idea/
 .vscode/
 
-# Credenciais e configurações locais de ferramentas
+# Credentials and local tool settings
 .npmrc
 /.aws/
 /.ssh/
@@ -24,3 +24,5 @@ npm-debug.log*
 *.pfx
 credentials*.json
 service-account*.json
+playwright-report/
+test-results/

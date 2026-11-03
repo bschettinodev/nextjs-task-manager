@@ -12,7 +12,7 @@ export default async function HomePage() {
       <h1>Task Manager</h1>
       <p>A simple place to keep track of your tasks.</p>
       <p>Backend connection: <strong>{health.status}</strong></p>
-      <Link href="/tarefas">View tasks</Link>
+      <Link href="/tasks">View tasks</Link>
     </main>
   );
 }
