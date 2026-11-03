@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import type { Task } from "@/lib/task";
 import { createCaller } from "@/server/api/router";
+import TaskDeletion, { DeleteTaskButton } from "./task-deletion";
 import styles from "./page.module.css";
 
 export const metadata: Metadata = { title: "Tasks | Artefact" };
@@ -18,6 +19,9 @@ export default async function TasksPage({ searchParams }: {
   searchParams: Promise<{ saved?: string | string[] }>;
 }) {
   const { saved } = await searchParams;
+  let initialMessage = "";
+  if (saved === "created") initialMessage = "Task created successfully.";
+  if (saved === "updated") initialMessage = "Task updated successfully.";
   let tasks: Task[];
 
   try {
@@ -49,48 +53,49 @@ export default async function TasksPage({ searchParams }: {
           New task
         </Link>
       </header>
-      {(saved === "created" || saved === "updated") && (
-        <p role="status">{saved === "created" ? "Task created successfully." : "Task updated successfully."}</p>
-      )}
-
-      {tasks.length === 0 ? (
-        <section className={styles.notice} aria-labelledby="empty-title">
-          <h2 id="empty-title">No tasks yet</h2>
-          <p>Your tasks will appear here once they are created.</p>
-        </section>
-      ) : (
-        <section aria-label="Task list">
-          <p className={styles.hint}>
-            {tasks.length} {tasks.length === 1 ? "task" : "tasks"}
-          </p>
-          <ul className={styles.list}>
-            {tasks.map((task) => (
-              <li key={task.id} className={styles.card}>
-                <article>
-                  <h2>{task.title}</h2>
-                  {task.description && (
-                    <p className={styles.description}>{task.description}</p>
-                  )}
-                  <footer className={styles.footer}>
-                    <p className={styles.hint}>
-                      Created <time dateTime={new Date(task.createdAt).toISOString()}>
-                        {dateFormatter.format(task.createdAt)} UTC
-                      </time>
-                    </p>
-                    <Link
-                      href={`/tasks/${task.id}/edit`}
-                      className={styles.action}
-                      aria-label={`Edit task: ${task.title}`}
-                    >
-                      Edit
-                    </Link>
-                  </footer>
-                </article>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
+      <TaskDeletion initialMessage={initialMessage}>
+        {tasks.length === 0 ? (
+          <section className={styles.notice} aria-labelledby="empty-title">
+            <h2 id="empty-title">No tasks yet</h2>
+            <p>Your tasks will appear here once they are created.</p>
+          </section>
+        ) : (
+          <section aria-label="Task list">
+            <p className={styles.hint}>
+              {tasks.length} {tasks.length === 1 ? "task" : "tasks"}
+            </p>
+            <ul className={styles.list}>
+              {tasks.map((task) => (
+                <li key={task.id} className={styles.card}>
+                  <article>
+                    <h2>{task.title}</h2>
+                    {task.description && (
+                      <p className={styles.description}>{task.description}</p>
+                    )}
+                    <footer className={styles.footer}>
+                      <p className={styles.hint}>
+                        Created <time dateTime={new Date(task.createdAt).toISOString()}>
+                          {dateFormatter.format(task.createdAt)} UTC
+                        </time>
+                      </p>
+                      <div className={styles.actions}>
+                        <Link
+                          href={`/tasks/${task.id}/edit`}
+                          className={styles.action}
+                          aria-label={`Edit task: ${task.title}`}
+                        >
+                          Edit
+                        </Link>
+                        <DeleteTaskButton task={{ id: task.id, title: task.title }} />
+                      </div>
+                    </footer>
+                  </article>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+      </TaskDeletion>
     </main>
   );
 }

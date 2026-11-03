@@ -1,0 +1,71 @@
+.destructive,
+.dialog button {
+  min-height: 2.75rem;
+  padding: 0.65rem 1rem;
+  border: 1px solid #8791a1;
+  border-radius: 0.5rem;
+  font: inherit;
+  background: #fff;
+  color: #172033;
+  cursor: pointer;
+}
+
+button.destructive {
+  border-color: #a21b23;
+  background: #a21b23;
+  color: #fff;
+}
+
+.destructive:disabled,
+.dialog button:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+
+.destructive:focus-visible,
+.dialog :focus-visible,
+.feedback:focus {
+  outline: 3px solid #1747a6;
+  outline-offset: 3px;
+}
+
+.dialog {
+  box-sizing: border-box;
+  width: min(32rem, calc(100% - 2rem));
+  max-height: calc(100dvh - 2rem);
+  padding: 1.5rem;
+  border: 1px solid #dce1e8;
+  border-radius: 0.75rem;
+  color: #172033;
+  overflow-wrap: anywhere;
+}
+
+.dialog::backdrop {
+  background: rgb(23 32 51 / 55%);
+}
+
+.dialog h2 {
+  margin-top: 0;
+  font-size: 1.25rem;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.feedback {
+  overflow-wrap: anywhere;
+}
+
+.feedback:empty,
+.progress:empty,
+.error:empty {
+  margin: 0;
+}
+
+.error {
+  color: #a21b23;
+}
