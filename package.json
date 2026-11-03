@@ -2,6 +2,7 @@
   "name": "artefact-task-manager",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "engines": {
     "node": ">=24 <25"
   },
@@ -15,7 +16,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint . --max-warnings=0",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "node --conditions=react-server --test src/server/api/tasks.test.ts"
   },
   "dependencies": {
     "@trpc/client": "11.23.0",
