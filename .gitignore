@@ -1,0 +1,26 @@
+node_modules/
+.next/
+out/
+coverage/
+*.tsbuildinfo
+.env*
+!.env.example
+.DS_Store
+npm-debug.log*
+*.log
+.vercel/
+.idea/
+.vscode/
+
+# Credenciais e configurações locais de ferramentas
+.npmrc
+/.aws/
+/.ssh/
+/.codex/
+/.agents/
+*.pem
+*.key
+*.p12
+*.pfx
+credentials*.json
+service-account*.json
